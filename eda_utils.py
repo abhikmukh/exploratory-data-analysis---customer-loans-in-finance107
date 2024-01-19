@@ -9,29 +9,30 @@ class DataTransform:
     """
     This class is used to transform the data
     """
-    def __init__(self, df: pd.DataFrame) -> None:
-        self.df = df
-
-    def change_date_format(self, column_name: str, date_format: str) -> pd.DataFrame:
+    @staticmethod
+    def change_date_format(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
         """
         This function is used to change the date format of a column
+        :param df:
         :param column_name:
         :param date_format:
-        :return: dataframe
+        :return:
         """
-        self.df[column_name] = pd.to_datetime(self.df[column_name], format=date_format)
-        self.df[column_name] = self.df[column_name].dt.date.apply(lambda x: x.strftime('%Y-%m'))
-        return self.df
+        df[column_name] = df[column_name].astype(object).astype('datetime64[ns]')
+        df[column_name] = pd.to_datetime(df[column_name])
+        return df
 
-    def change_column_type(self, column_name: str, new_type: str) -> pd.DataFrame:
+    @staticmethod
+    def change_column_type(df: pd.DataFrame, column_name: str, new_type: str) -> pd.DataFrame:
         """
         This function is used to change the type of a column
+        :param df:
         :param column_name:
         :param new_type:
-        :return: dataframe
+        :return:
         """
-        self.df[column_name] = self.df[column_name].astype(new_type)
-        return self.df
+        df[column_name] = df[column_name].astype(new_type)
+        return df
 
 
 class DataFrameTransform:
@@ -39,54 +40,61 @@ class DataFrameTransform:
     This class is used to transform the dataframe
     """
 
-    def __init__(self, df: pd.DataFrame) -> None:
-        self.df = df
-
-    def fill_null_values_with_mean(self, column_name: str) -> pd.DataFrame:
+    @staticmethod
+    def fill_null_values_with_mean(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
         """
         This function is used to fill the null values with mean
+        :param df:
         :param column_name:
         :return:
         """
-        self.df[column_name] = self.df[column_name].fillna(self.df[column_name].mean())
-        return self.df
+        df[column_name] = df[column_name].fillna(df[column_name].mean())
+        return df
 
-    def fill_null_values_with_median(self, column_name: str) -> pd.DataFrame:
+    @staticmethod
+    def fill_null_values_with_median(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
         """
         This function is used to fill the null values with median
+        :param df:
         :param column_name:
         :return:
         """
-        self.df[column_name] = self.df[column_name].fillna(self.df[column_name].median())
-        return self.df
+        df[column_name] = df[column_name].fillna(df[column_name].median())
+        return df
 
-    def fill_null_values_with_mode(self, column_name: str) -> pd.DataFrame:
+    @staticmethod
+    def fill_null_values_with_mode(df:pd.DataFrame, column_name: str) -> pd.DataFrame:
         """
         This function is used to fill the null values with mode
+        :param df:
         :param column_name:
         :return:
         """
-        self.df[column_name] = self.df[column_name].fillna(self.df[column_name].mode()[0])
-        return self.df
+        df[column_name] = df[column_name].fillna(df[column_name].mode()[0])
+        return df
 
-    def fill_null_values_with_custom_value(self, column_name: str, value: float) -> pd.DataFrame:
+    @staticmethod
+    def fill_null_values_with_custom_value(df, column_name: str, value: float) -> pd.DataFrame:
         """
         This function is used to fill the null values with custom value
+        :param df:
         :param column_name:
         :param value:
         :return:
         """
-        self.df[column_name] = self.df[column_name].fillna(value)
-        return self.df
+        df[column_name] = df[column_name].fillna(value)
+        return df
 
-    def fill_null_values_with_most_frequent_value(self, column_name: str) -> pd.DataFrame:
+    @staticmethod
+    def fill_null_values_with_most_frequent_value(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
         """
         This function is used to fill the null values with most frequent value
+        :param df:
         :param column_name:
         :return:
         """
-        self.df[column_name] = self.df[column_name].fillna(self.df[column_name].value_counts().index[0])
-        return self.df
+        df[column_name] = df[column_name].fillna(df[column_name].value_counts().index[0])
+        return df
 
 
 class DataFrameInfo:
@@ -206,6 +214,17 @@ class DataFrameInfo:
         :return: series
         """
         return df[column_name].quantile(0.75) - df[column_name].quantile(0.25)
+
+    @staticmethod
+    def get_column_type_of_list_of_columns(df: pd.DataFrame, list_of_columns: list) -> None:
+        """
+        This function is used to get the type of a column
+        :param df:
+        :param list_of_columns:
+        :return: None
+        """
+        for column in list_of_columns:
+            print(f"Type of {column}: {df[column].dtypes}")
 
 
 class DataFrameVisualize:
