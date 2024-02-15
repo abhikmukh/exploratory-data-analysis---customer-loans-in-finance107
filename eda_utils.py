@@ -96,6 +96,17 @@ class DataFrameTransform:
         df[column_name] = df[column_name].fillna(df[column_name].value_counts().index[0])
         return df
 
+    @staticmethod
+    def get_log_transform(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
+        """
+        This function is used to get the log transform of a column
+        :param df:
+        :param column_name:
+        :return: DataFrame
+        """
+        df[column_name] = df[column_name].map(lambda i: np.log(i) if i > 0 else 0)
+        return df
+
 
 class DataFrameInfo:
     """
@@ -176,16 +187,6 @@ class DataFrameInfo:
         return df.columns[df.isnull().any()].tolist()
 
     @staticmethod
-    def get_log_transform(df: pd.DataFrame, column_name: str) -> pd.Series:
-        """
-        This function is used to get the log transform of a column
-        :param df:
-        :param column_name:
-        :return: Series
-        """
-        return df[column_name].map(lambda i: np.log(i) if i > 0 else 0)
-
-    @staticmethod
     def analyse_categorical_data(df: pd.DataFrame, column_name: str) -> pd.Series:
         """
         This function is used to get the value counts of a column
@@ -225,6 +226,21 @@ class DataFrameInfo:
         """
         for column in list_of_columns:
             print(f"Type of {column}: {df[column].dtypes}")
+
+    @staticmethod
+    def calculate_iqr_outliers(df: pd.DataFrame, column_name: str) -> pd.Series:
+        """
+        This function is used to calculate the IQR outliers of a column
+        :param df:
+        :param column_name:
+        :return: series
+        """
+        q1 = df[column_name].quantile(0.25)
+        q3 = df[column_name].quantile(0.75)
+        iqr = q3 - q1
+        lower_bound = q1 - 1.5 * iqr
+        upper_bound = q3 + 1.5 * iqr
+        return df[(df[column_name] < lower_bound) | (df[column_name] > upper_bound)][column_name]
 
 
 class DataFrameVisualize:
@@ -284,7 +300,7 @@ class DataFrameVisualize:
 
     @staticmethod
     def plot_qqplot(df: pd.DataFrame, column_name: str):
-        return qqplot(df[column_name], scale=1, line='q', fit=True)
+        return qqplot(df[column_name], scale=1, line='q', fit=True).show()
 
     @staticmethod
     def plot_prob_distribution(df: pd.DataFrame, column_name: str):
@@ -293,7 +309,7 @@ class DataFrameVisualize:
         # Create bar plot
         plt.xlabel('Values')
         plt.ylabel('Probability')
-        plt.title('Discrete Probability Distribution')
+        plt.title(column_name)
         return sns.barplot(y=probs.values, x=probs.index)
 
     @staticmethod
