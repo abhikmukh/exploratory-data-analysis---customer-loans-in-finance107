@@ -256,7 +256,8 @@ class DataFrameVisualize:
         :param column_name:
         :return:
         """
-        return sns.histplot(data=df, y=column_name, kde=True)
+        return sns.histplot(data=df, x=column_name, kde=True)
+
 
     @staticmethod
     def plot_boxplot(df: pd.DataFrame, column_name: str):
@@ -317,6 +318,15 @@ class DataFrameVisualize:
         sns.boxplot(y=df[column_name], color='lightgreen', showfliers=True)
         sns.swarmplot(y=df[column_name], color='black', size=5)
         plt.title(f'Box plot with scatter points {column_name}')
+
+    @staticmethod
+    def plot_facet_grids(df: pd.DataFrame, column_name: str, target: str):
+        plotting_df = df.loc[:, [column_name, target]]
+        g = sns.FacetGrid(plotting_df, col=target)
+        g.map(sns.histplot, column_name)
+        g.set_xticklabels(rotation=90)
+
+
 
 
 
