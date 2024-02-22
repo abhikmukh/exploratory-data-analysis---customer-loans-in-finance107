@@ -16,7 +16,7 @@ class DataTransform:
         :param df:
         :param column_name:
         :param date_format:
-        :return:
+        :return: dataframe
         """
         df[column_name] = df[column_name].astype(object).astype('datetime64[ns]')
         df[column_name] = pd.to_datetime(df[column_name])
@@ -29,7 +29,7 @@ class DataTransform:
         :param df:
         :param column_name:
         :param new_type:
-        :return:
+        :return: dataframe
         """
         df[column_name] = df[column_name].astype(new_type)
         return df
@@ -46,7 +46,7 @@ class DataFrameTransform:
         This function is used to fill the null values with mean
         :param df:
         :param column_name:
-        :return:
+        :return: dataframe
         """
         df[column_name] = df[column_name].fillna(df[column_name].mean())
         return df
@@ -57,7 +57,7 @@ class DataFrameTransform:
         This function is used to fill the null values with median
         :param df:
         :param column_name:
-        :return:
+        :return: dataframe
         """
         df[column_name] = df[column_name].fillna(df[column_name].median())
         return df
@@ -68,7 +68,7 @@ class DataFrameTransform:
         This function is used to fill the null values with mode
         :param df:
         :param column_name:
-        :return:
+        :return: dataframe
         """
         df[column_name] = df[column_name].fillna(df[column_name].mode()[0])
         return df
@@ -80,7 +80,7 @@ class DataFrameTransform:
         :param df:
         :param column_name:
         :param value:
-        :return:
+        :return: dataframe
         """
         df[column_name] = df[column_name].fillna(value)
         return df
@@ -91,7 +91,7 @@ class DataFrameTransform:
         This function is used to fill the null values with most frequent value
         :param df:
         :param column_name:
-        :return:
+        :return: dataframe
         """
         df[column_name] = df[column_name].fillna(df[column_name].value_counts().index[0])
         return df
@@ -118,7 +118,7 @@ class DataFrameInfo:
         This function is used to get the mean of a column
         :param df:
         :param column_name:
-        :return:
+        :return: None
         """
         print(f"mean: {df[column_name].mean()}, median: {df[column_name].median()}, mode: {df[column_name].mode()[0]}")
 
@@ -146,7 +146,7 @@ class DataFrameInfo:
         """
         This function is used to get the unique values in a column
         :param df:
-        :return:
+        :return: series
         """
         return df.nunique()
 
@@ -260,7 +260,7 @@ class DataFrameVisualize:
 
 
     @staticmethod
-    def plot_boxplot(df: pd.DataFrame, column_name: str):
+    def plot_boxplot(df: pd.DataFrame, column_name: str) -> None:
         """
         This function is used to plot a boxplot
         :param df:
@@ -281,7 +281,7 @@ class DataFrameVisualize:
         return df.plot.scatter(x=x, y=y)
 
     @staticmethod
-    def plot_correlation_matrix(df: pd.DataFrame):
+    def plot_correlation_matrix(df: pd.DataFrame) -> pd.DataFrame:
         """
         This function is used to plot a correlation matrix
         :param df:
@@ -301,10 +301,22 @@ class DataFrameVisualize:
 
     @staticmethod
     def plot_qqplot(df: pd.DataFrame, column_name: str):
+        """
+        This function is used to plot a qqplot
+        :param df:
+        :param column_name:
+        :return:
+        """
         return qqplot(df[column_name], scale=1, line='q', fit=True).show()
 
     @staticmethod
     def plot_prob_distribution(df: pd.DataFrame, column_name: str):
+        """
+        This function is used to plot a probability distribution
+        :param df:
+        :param column_name:
+        :return:
+        """
         probs = df[column_name].value_counts(normalize=True)
 
         # Create bar plot
@@ -315,12 +327,25 @@ class DataFrameVisualize:
 
     @staticmethod
     def box_plot_with_scatter_points(df: pd.DataFrame, column_name: str):
+        """
+        This function is used to plot a box plot with scatter points
+        :param df:
+        :param column_name:
+        :return:
+        """
         sns.boxplot(y=df[column_name], color='lightgreen', showfliers=True)
         sns.swarmplot(y=df[column_name], color='black', size=5)
         plt.title(f'Box plot with scatter points {column_name}')
 
     @staticmethod
     def plot_facet_grids(df: pd.DataFrame, column_name: str, target: str):
+        """
+        This function is used to plot facet grids
+        :param df:
+        :param column_name:
+        :param target:
+        :return:
+        """
         plotting_df = df.loc[:, [column_name, target]]
         g = sns.FacetGrid(plotting_df, col=target)
         g.map(sns.histplot, column_name)

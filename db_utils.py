@@ -11,6 +11,10 @@ class RDSDatabaseConnector:
         self.credentials_dict = credential_dict
 
     def _init_db_engine(self) -> create_engine:
+        """
+        Initialize the database engine
+        :return: database engine
+        """
         database_cred = self.credentials_dict
         print(database_cred)
         database_uri = f"postgresql+psycopg2://{database_cred['RDS_USER']}" \
@@ -19,13 +23,22 @@ class RDSDatabaseConnector:
         database_engine = create_engine(database_uri)
         return database_engine
 
-    def list_db_table(self) -> list
+    def list_db_table(self) -> list:
+        """
+        List all the tables in the database
+        :return: List of the tables
+        """
         engine = self._init_db_engine()
         inspector = inspect(engine)
         list_all_tables = inspector.get_table_names()
         return list_all_tables
 
     def read_rds_table(self, table_name: str) -> pd.DataFrame:
+        """
+        Read the table from the database
+        :param table_name:
+        :return: dataframe
+        """
 
         all_tables = self.list_db_table()
         for table in all_tables:
@@ -35,5 +48,11 @@ class RDSDatabaseConnector:
 
     @staticmethod
     def write_csv_file(df: pd.DataFrame, file_name: str) -> None:
+        """
+        Write the dataframe to a csv file
+        :param df:
+        :param file_name:
+        :return: a csv file
+        """
         return df.to_csv(file_name, index=False)
 
